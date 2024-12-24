@@ -3,16 +3,27 @@
 
 #include QMK_KEYBOARD_H
 #include "rgb_record/rgb_record.h"
+#include "os_detect.h"
 
 enum layers {
-    _BL = 0,
-    _FL,
-    _MBL,
-    _MFL,
-    _FBL,
+    _BL = 0,   // Windows Base Layer
+    _FL,       // Windows Function Layer
+    _MBL,      // macOS Base Layer
+    _MFL,      // macOS Function Layer
+    _FBL,      // Fallback Layer
 };
 
 #define ______ HS_BLACK
+
+// Called at initialization
+void matrix_init_user(void) {
+    // Dynamically set the default layer based on detected OS
+    if (is_mac()) {
+        default_layer_set((1UL << _MBL)); // macOS Base Layer
+    } else {
+        default_layer_set((1UL << _BL)); // Windows Base Layer
+    }
+}
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
